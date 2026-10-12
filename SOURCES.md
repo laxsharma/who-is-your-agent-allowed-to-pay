@@ -758,3 +758,9 @@ followed to the live page. Pages change, so the live page may differ from the li
 | x402 PR 3220, `authority` extension | https://github.com/x402-foundation/x402/pull/3220 |
 | Ant International Agentic Mobile Protocol | https://github.com/ant-intl/AMP |
 | Kite whitepaper | https://www.gokite.ai/kite-whitepaper |
+
+## Added 12 Oct (re-check before the LinkedIn post)
+
+| Saved as | Source | Fetched (UTC) | sha256 or commit |
+|---|---|---|---|
+| `raw/e-check-2026-10-12/docs.rhinestone.dev_wallets_session-keys_security.md` | https://docs.rhinestone.dev/wallets/session-keys/security.md | 2026-10-12T21:40:12Z | `758f1d77246f2cf6c27e218637bd533cd4fad1875a8fd76ace1f509a41a246fa` |

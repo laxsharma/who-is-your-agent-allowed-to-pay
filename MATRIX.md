@@ -131,7 +131,7 @@ revocation, and nothing expresses the test case across rails.
 | Item | How | What still falls short |
 |---|---|---|
 | B4 MetaMask Delegation Framework | Delegation to a per-task key with AllowedCalldataEnforcer or AllowedTargetsEnforcer (payees), ERC20TransferAmountEnforcer (budget), TimestampEnforcer (end), `disableDelegation` (revoke). Verdict C: four to six enforcers, chosen and ordered by the principal. | Revocation is reversible (`enableDelegation`); a principal cannot disable a child delegation its agent signed, only its own link; per-payee caps need one delegation per payee; the DelegationManager owner can pause every redemption; one chain. |
-| B5 Rhinestone Smart Sessions v1 | A session per task with an ArgPolicy or UniActionPolicy recipient rule, ERC20SpendingLimitPolicy, TimeFramePolicy; `removeSession` emits `SessionRemoved`. | Beta; the vendor's app SDK has no self-service revoke and points integrators to support; the SDK defaults to sudo; a multi-chain grant must be removed chain by chain. |
+| B5 Rhinestone Smart Sessions v1 | A session per task with an ArgPolicy or UniActionPolicy recipient rule, ERC20SpendingLimitPolicy, TimeFramePolicy; `removeSession` emits `SessionRemoved`. | Beta; on 8 Oct the vendor's app SDK had no self-service revoke and pointed integrators to support (a revoke is documented since 12 Oct, see B5 D9); the SDK defaults to sudo; a multi-chain grant must be removed chain by chain. |
 | B7 Biconomy | Same contracts as B5. | The documented agent path has no revoke step and defaults unconfigured actions to sudo. |
 | A13 thirdweb MinimalAccount | Session spec per key with transfer or call policies, lifetime limits, `expiresAt`. | Only native-token payees or one ERC-20 payee per token per session; no revoke function (replace the session); the SDK defaults new keys to wildcard. |
 | A10 Crossmint wallet scopes | Signer per task with `recipients`, lifetime `spendingLimit`, `expiresAt`; signer removal. | Confirmed in public code on Stellar only; the EVM and Solana contracts are not public; no per-transaction cap; coverage of x402 typed-data signatures not documented. |
@@ -187,8 +187,8 @@ Each is verified in the item's section and in `notes/spot-checks.md`.
 1. **Revocation nobody else can check, and mandates nobody can revoke.** Off chain, every product revokes in
    one call that only the principal or vendor sees. The signed-mandate designs (AP2 v0.2, ACP, Mastercard
    Verifiable Intent v0.1, KYAPay) define no revocation at all. On chain, where a third party can check,
-   MetaMask's `disableDelegation` can be undone with `enableDelegation`, Rhinestone's app SDK has no
-   self-service revoke, ZeroDev's nonce revocation emits no event, and thirdweb has no revoke function.
+   MetaMask's `disableDelegation` can be undone with `enableDelegation`, Rhinestone's app SDK had no
+   self-service revoke on 8 Oct (one is documented since 12 Oct, see B5), ZeroDev's nonce revocation emits no event, and thirdweb has no revoke function.
 2. **The payee is the weakest dimension.** Coinbase Spend Permissions can only pay the spender; AWS
    AgentCore "does not enforce `payTo` restrictions server-side"; the Safe Allowance module never checks
    the recipient; MetaMask's ERC-20 payee rule takes one address and throws on two; Stripe Issuing has no
@@ -593,14 +593,14 @@ multisig), user-op policies, per-action policies and a salt.
 | D6 | N | Token by action target; chain by where the session is enabled. |
 | D7 | N | TimeFramePolicy `validAfter`, `validUntil`. |
 | D8 | N | A fresh `permissionId` per task. The SDK defaults to sudo when no permissions are given. |
-| D9 | N in the contract | `removeSession(permissionId)` by the account, emits `SessionRemoved`, public `isPermissionEnabled` (SmartSessionBase.sol:329-355). But Rhinestone's app-facing SDK "has no app-origin revoke method" and tells integrators to contact support (docs.rhinestone.dev security.md), and "For a multi-chain grant, authority can remain active on one chain after it has been removed from another." (security.md:78). |
+| D9 | N in the contract | `removeSession(permissionId)` by the account, emits `SessionRemoved`, public `isPermissionEnabled` (SmartSessionBase.sol:329-355). But Rhinestone's app-facing SDK "has no app-origin revoke method" and tells integrators to contact support (docs.rhinestone.dev security.md), and "For a multi-chain grant, authority can remain active on one chain after it has been removed from another." (security.md:78). **Update 12 Oct 2026:** Rhinestone's docs now show a self-service revoke, `revokeSessionGrant()` in the `@rhinestone/wallet` client, which runs on every chain the grant is enabled on and reports success only when it lands on all of them; "authority stays active on any chain whose revoke failed" (docs.rhinestone.dev/wallets/session-keys/security, read 12 Oct, lines 68 and 79). Verdicts unchanged. |
 | D10 | C | A second, higher-cap session whose validator is a multisig that includes a human. |
 | D11 | C | `permissionId` (salt can encode a task id) travels in the user operation; nothing reaches the payee. |
 | D12 | N allows, X denials | Session and TokenSpent events. |
 | D13 | C | One signature can enable sessions on several chains; each chain counts separately. |
 
 Test case: (a) to (e) yes on a single chain, at contract level. **Expressible on one chain**, but the
-vendor's own SDK path offers no self-service revoke.
+vendor's own SDK path offered no self-service revoke on 8 Oct (see the 12 Oct update in D9).
 
 ### B6. ZeroDev Kernel permissions
 
