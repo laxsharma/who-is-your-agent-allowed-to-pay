@@ -1,0 +1,18 @@
+Afternoon 1: the trip goes ahead
+--------------------------------
+13:20  payee:lookalike-bookings     600.00  DENY     counterparty_not_listed     total     0.00  #2 prev 66f2c183  a lookalike booking site asks for the deposit
+14:00  payee:airline                480.00  ALLOW    ok                          total   480.00  #3 prev 9d9dad7a  the flight
+14:05  payee:hotel                  590.00  DENY     task_budget_exceeded        total   480.00  #4 prev 90631c67  the hotel, first quote
+14:30  payee:hotel                  510.00  ALLOW    ok                          total   990.00  #5 prev eca9528f  the hotel, a cheaper room
+21:00  payee:airline                 10.00  ALLOW    ok                          total  1000.00  #6 prev cd991ed8  a seat upgrade; the trip was booked at 15:40
+21:01  payee:airline                 10.00  DENY     replay                      total  1000.00  #7 prev 69d9b1b0  the same upgrade request, sent again
+21:02  payee:airline                 10.00  DENY     bad_signature               total     0.00  #8 prev 745884b7  the Austin key, on the Denver trip
+00:00  payee:hotel                    1.00  DENY     task_expired                total  1000.00  #9 prev df2991f8  midnight
+audit: clean
+
+Afternoon 2: the offsite is cancelled at 14:10
+----------------------------------------------
+14:00  payee:airline                480.00  ALLOW    ok                          total   480.00  #2 prev 23bbd323  the flight
+14:10  REVOKE                               ACCEPTED ok                          total   480.00  #3 prev 4994bf51  the offsite is cancelled: one signed statement
+14:11  payee:hotel                  510.00  DENY     task_revoked                total   480.00  #4 prev c10a2332  the hotel request the agent signed at 14:09
+audit: clean
